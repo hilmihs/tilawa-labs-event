@@ -1,0 +1,1 @@
+ALTER TABLE "acara_peserta" ADD COLUMN IF NOT EXISTS "antre_at" timestamp with time zone;

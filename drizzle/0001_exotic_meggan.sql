@@ -1,0 +1,1 @@
+ALTER TABLE "acara" ADD COLUMN "agenda" jsonb;

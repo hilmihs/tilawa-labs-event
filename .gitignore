@@ -1,0 +1,22 @@
+node_modules
+.next
+.env
+.env.deploy.prev
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
+backup/
+.env.vercel
+.vercel
+supabase-root-ca.crt
+.env.production.local
+
+# Source material from the previous events: real committee names, budgets and
+# minutes. Kept on disk for reference, deliberately not in the repository.
+docs/*
+!docs/superpowers/
+
+# Artefak otomasi peramban saat pengembangan, bukan bagian dari aplikasi.
+.playwright-mcp/
+*.png.tmp
+landing-en.png

@@ -1,0 +1,195 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1788967863126,
+      "tag": "0000_slimy_black_tom",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1788969611850,
+      "tag": "0001_exotic_meggan",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788998416797,
+      "tag": "0002_aromatic_blue_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789005433431,
+      "tag": "0003_gigantic_arclight",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789013278026,
+      "tag": "0004_damp_silver_centurion",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1789015419790,
+      "tag": "0005_skinny_the_phantom",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789090713154,
+      "tag": "0006_flippant_sally_floyd",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789373111561,
+      "tag": "0007_nice_mojo",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1789379302491,
+      "tag": "0008_odd_junta",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1789385574999,
+      "tag": "0009_greedy_nekra",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1789387428324,
+      "tag": "0010_easy_iron_patriot",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1789388039740,
+      "tag": "0011_spicy_rocket_raccoon",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1789398435736,
+      "tag": "0012_bumpy_inhumans",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1789400439632,
+      "tag": "0013_hapus_deskripsi_bawaan",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1789424890533,
+      "tag": "0014_pemateri_hafizhahullah",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1789425604044,
+      "tag": "0015_brief_zaladane",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1789447352526,
+      "tag": "0016_nama_open_lecture",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1789462104932,
+      "tag": "0017_doa_protect_him",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1789466761707,
+      "tag": "0018_aduan",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1789638670652,
+      "tag": "0019_minat_club",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1789793656385,
+      "tag": "0020_jalur_kehadiran",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1789829968295,
+      "tag": "0021_minat_jawaban",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1789830872954,
+      "tag": "0022_pengaturan",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1789838837595,
+      "tag": "0023_ots_antrean",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1790049715245,
+      "tag": "0024_kuis_jawaban",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1790143656400,
+      "tag": "0025_trafik_artikel_kuis",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1790353669058,
+      "tag": "0026_feedback_absen",
+      "breakpoints": true
+    }
+  ]
+}

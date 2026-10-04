@@ -1,0 +1,62 @@
+# Target shape: a VM running docker compose. It behaves identically on an App
+# Service or on Container Apps, and it moves to any other VPS in ten minutes.
+#
+# DATABASE_URL never enters a pipeline variable group. It lives in
+# /srv/<app>/.env on the server, chmod 600. Anyone who can edit the pipeline can
+# read a variable group — including people who should not hold the database.
+
+services:
+  app:
+    image: ${IMAGE}
+    container_name: nawa-app
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_VERSION: ${IMAGE}
+    ports:
+      - "127.0.0.1:3000:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>r.json()).then(j=>process.exit(j.db==='ok'?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Run on demand, never as part of `up`:
+  #   docker compose run --rm migrator
+  migrator:
+    image: ${MIGRATOR_IMAGE:-${IMAGE}}
+    profiles: ["tools"]
+    env_file: .env
+    command: ["pnpm", "db:migrate"]
+
+  # Optional: Postgres on the same box. Comment this out and point DATABASE_URL
+  # at a managed service instead — nothing else in the app changes.
+  db:
+    image: postgres:16-alpine
+    container_name: nawa-db
+    restart: unless-stopped
+    profiles: ["with-db"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-nawa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-nawa}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backup:/backup
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nawa}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

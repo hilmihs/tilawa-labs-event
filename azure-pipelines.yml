@@ -1,0 +1,182 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+variables:
+  - group: Nawa-Prod # Gunakan prefix ENV_
+
+# Agent pool milik tim server ("Self Hosted") — arahan tim server 24 Sep 2026.
+# Build terjadi di server lewat SSH; agent hanya butuh bash + python3 (render env).
+pool:
+  name: Self Hosted
+
+steps:
+  - checkout: none
+  - task: Bash@3
+    displayName: "🔧 Generate exportable ENV from Variable Group"
+    # Secret variable Azure TIDAK muncul di `printenv` kecuali dipetakan eksplisit
+    # ke env task. Tanpa ini, secret tak masuk nawa.env → tiket tak bisa
+    # ditandatangani, kode akses kosong. Tambah var secret baru di sini juga.
+    # Variabel yang belum ada di group dilewati oleh skrip di bawah, jadi baris
+    # ini aman walau nilainya belum diisi.
+    env:
+      ENV_AUTH_SECRET: $(ENV_AUTH_SECRET)
+      ENV_IP_SALT: $(ENV_IP_SALT)
+      ENV_KODE_PETUGAS: $(ENV_KODE_PETUGAS)
+      ENV_KODE_PANITIA: $(ENV_KODE_PANITIA)
+      ENV_KODE_ADMIN: $(ENV_KODE_ADMIN)
+      ENV_EXPORT_TOKEN: $(ENV_EXPORT_TOKEN)
+      ENV_SENDGRID_API_KEY: $(ENV_SENDGRID_API_KEY)
+    inputs:
+      targetType: "inline"
+      script: |
+        # Emit systemd EnvironmentFile format (KEY=value, NO `export`, one per line).
+        # systemd EnvironmentFile does not accept shell syntax; double-quoted values
+        # are unquoted by systemd and `$` is left literal (safe for tokens).
+        # Prefix ENV_ hanya konvensi penamaan di variable group; aplikasi membaca
+        # nama aslinya (AUTH_SECRET, ACARA_SLUG, …), jadi prefix dibuang di sini.
+        # Nilai "$(ENV_X)" yang tak ter-resolve (variabel belum ada di group)
+        # dilewati supaya tak menulis literal macro ke env file.
+        echo "🔄 Export Azure DevOps Variable Group (prefix ENV_) to systemd env file"
+        printenv | grep '^ENV_' | cut -d= -f1 | while read -r key; do
+          value=$(printenv "$key")
+          case "$value" in '$('*')') echo "⏭️  $key belum diisi, dilewati" >&2; continue ;; esac
+          safe_value=$(python3 -c "import json, os; print(json.dumps(os.getenv('$key')))")
+          echo "${key#ENV_}=$safe_value"
+        done > nawa.env
+
+        # Nama variabel yang benar-benar terlihat oleh pipeline ikut dikirim (nama
+        # saja). /api/health menampilkannya, jadi panitia tanpa akses log pipeline
+        # tetap bisa tahu apakah variable group terbaca.
+        echo "NAWA_ENV_KEYS=\"$(cut -d= -f1 nawa.env | paste -sd, -)\"" >> nawa.env
+
+        echo "📄 Variabel yang dikirim (nilai disembunyikan):"
+        cut -d= -f1 nawa.env
+  #⬇️ Kirim nawa.env ke server via SCP
+  - task: CopyFilesOverSSH@0
+    displayName: "📤 Upload nawa.env to server"
+    inputs:
+      sshEndpoint: "server-staging@103.181.142.223"
+      sourceFolder: "."
+      contents: "nawa.env"
+      targetFolder: "/var/www/html/nawa"
+      cleanTargetFolder: false
+      overwrite: true
+  - task: Ssh@0
+    displayName: "🔗 Wire nawa.env into next-nawa via systemd drop-in"
+    inputs:
+      sshEndpoint: "server-staging@103.181.142.223"
+      runOptions: "inline"
+      failOnStdErr: false
+      inline: |
+        # env_vars.sh dulu di-upload tapi tak pernah dibaca proses → semua var
+        # (ENV_PUBLIC_API dll) tak sampai ke `next start` → /api/v1/* 404.
+        # Pasang EnvironmentFile lewat drop-in (idempotent, tak perlu sentuh unit).
+        DROPIN_DIR=/etc/systemd/system/next-nawa.service.d
+        DESIRED='[Service]
+        EnvironmentFile=/var/www/html/nawa/nawa.env'
+        sudo mkdir -p "$DROPIN_DIR"
+        if [ "$(cat "$DROPIN_DIR/10-env.conf" 2>/dev/null)" != "$DESIRED" ]; then
+          echo "$DESIRED" | sudo tee "$DROPIN_DIR/10-env.conf"
+          sudo systemctl daemon-reload
+          echo "✅ EnvironmentFile drop-in installed"
+        else
+          echo "✅ drop-in already current, skip"
+        fi
+  
+  - task: Ssh@0
+    displayName: "🚀 Deploy Next.js Frontend"
+    inputs:
+      sshEndpoint: "server-staging@103.181.142.223"
+      runOptions: "inline"
+      failOnStdErr: false
+      inline: |
+        echo "🚀 START: Deploy Next.js Frontend"
+        set -euo pipefail 2>/dev/null || set -eu
+
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+        cd /var/www/html/nawa
+        echo "📂 Current folder: $(pwd)"
+
+        echo "⬇️ Git sync Web nawa (strict)"
+        git fetch origin main
+        git reset --hard origin/main
+        echo "📌 Deployed commit: $(git log -1 --oneline)"
+
+        # Commit yang berjalan dicatat ke nawa.env, sehingga /api/health menampilkan
+        # "versi" commit tanpa perlu membuka log pipeline. Kalau health tetap
+        # menunjukkan "dev", berarti service tidak membaca nawa.env sama sekali.
+        touch nawa.env
+        sed -i '/^APP_VERSION=/d' nawa.env
+        echo "APP_VERSION=\"$(git rev-parse --short HEAD)\"" >> nawa.env
+
+        echo "📦 Install dependency Web nawa"
+        nvm exec 24.15.0 npm install
+
+        # Skema DB dibawa oleh kode (drizzle/), jadi migrasi jalan di setiap deploy;
+        # idempoten, tak ada efek bila sudah terkini. Seed hanya membuat event bila
+        # tabel masih kosong, tak pernah menimpa suntingan panitia dari /admin.
+        # DATABASE_URL tinggal di .env server (bukan variable group); nawa.env
+        # ikut dimuat supaya ACARA_SLUG dari group terpakai oleh seed.
+        echo "🗄️ Migrasi skema DB + seed awal"
+        set -a
+        [ -f .env ] && . ./.env
+        [ -f nawa.env ] && . ./nawa.env
+        set +a
+        if [ -z "${DATABASE_URL:-}" ]; then
+          echo "⚠️ DATABASE_URL tidak ditemukan di .env server — migrasi dilewati"
+        else
+          nvm exec 24.15.0 npm run db:migrate
+          nvm exec 24.15.0 npm run db:seed -- --jika-kosong
+        fi
+
+        # Service jalan sebagai root dan terus menulis cache runtime ke
+        # .next/standalone/.next selama ia hidup. Kalau build jalan bersamaan,
+        # Next gagal menimpa direktori root-owned itu:
+        #   EACCES: permission denied, rmdir '.next/standalone/.next'
+        # Karena versi lama sudah terhapus, kegagalan itu meninggalkan server
+        # tanpa berkas — aset 500, situs tak terpakai.
+        #
+        # Maka: hentikan service dulu supaya tak ada penulis lain, JANGAN hapus
+        # .next (cukup ambil alih kepemilikannya). Build yang gagal kini
+        # menyisakan build lama utuh, dan trap menghidupkannya kembali.
+        echo "⏸️ Stop service selama build (hindari race root vs user)"
+        sudo systemctl stop next-nawa
+
+        # Build gagal → hidupkan lagi versi lama yang masih di disk.
+        rollback() {
+          echo "⚠️ Build gagal — menghidupkan kembali build sebelumnya"
+          sudo systemctl start next-nawa || true
+          sudo systemctl status next-nawa --no-pager || true
+        }
+        trap rollback ERR
+
+        echo "🔑 Ambil alih kepemilikan .next (cache runtime bisa root-owned)"
+        sudo mkdir -p .next
+        sudo chown -R "$(id -u):$(id -g)" .next
+
+        echo "⚙️ Build Web nawa"
+        nvm exec 24.15.0 npm run build
+
+        # Build standalone tidak menyertakan public/ maupun .next/static; keduanya
+        # harus disalin. Tanpa public/, ilustrasi /kv/*.webp dan /sw.js (tiket
+        # offline) menjawab 404.
+        echo "📁 Copy static + public files to standalone folder"
+        cp -r .next/static .next/standalone/.next/
+        cp -r public .next/standalone/
+
+        trap - ERR
+
+        echo "▶️ Start systemd service"
+        sudo systemctl start next-nawa
+        sudo systemctl status next-nawa --no-pager
+
+        echo "✅ Next.js frontend deployment selesai"

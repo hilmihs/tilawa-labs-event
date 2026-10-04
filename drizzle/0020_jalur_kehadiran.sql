@@ -1,0 +1,1 @@
+ALTER TABLE "acara_kehadiran" ADD COLUMN "jalur" text;

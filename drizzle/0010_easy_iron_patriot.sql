@@ -1,0 +1,3 @@
+ALTER TABLE "acara_peserta" ADD COLUMN IF NOT EXISTS "pengguna_id" uuid;--> statement-breakpoint
+ALTER TABLE "acara_peserta" ADD CONSTRAINT "acara_peserta_pengguna_id_pengguna_id_fk" FOREIGN KEY ("pengguna_id") REFERENCES "public"."pengguna"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+CREATE UNIQUE INDEX "peserta_pengguna_unik" ON "acara_peserta" USING btree ("acara_id","pengguna_id") WHERE "acara_peserta"."pengguna_id" is not null;

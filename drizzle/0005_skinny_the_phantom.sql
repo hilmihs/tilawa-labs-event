@@ -1,0 +1,1 @@
+ALTER TABLE "acara_peserta" ADD COLUMN "keahlian" text;

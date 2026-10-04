@@ -1,0 +1,1121 @@
+{
+  "id": "d8ad94f7-c8e9-4c13-ae07-7d451dd64184",
+  "prevId": "7538432e-b95f-4911-ba4c-2b717ce0840f",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.acara": {
+      "name": "acara",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama_ar": {
+          "name": "nama_ar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "judul": {
+          "name": "judul",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "judul_ar": {
+          "name": "judul_ar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pemateri": {
+          "name": "pemateri",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pemateri_ar": {
+          "name": "pemateri_ar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "penyelenggara": {
+          "name": "penyelenggara",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "waktu_mulai": {
+          "name": "waktu_mulai",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "waktu_wajib_tiba": {
+          "name": "waktu_wajib_tiba",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "waktu_selesai": {
+          "name": "waktu_selesai",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "registrasi_buka_at": {
+          "name": "registrasi_buka_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "registrasi_tutup_at": {
+          "name": "registrasi_tutup_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lokasi": {
+          "name": "lokasi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "lokasi_ar": {
+          "name": "lokasi_ar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alamat": {
+          "name": "alamat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alamat_ar": {
+          "name": "alamat_ar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "peta_url": {
+          "name": "peta_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "peta_gambar_url": {
+          "name": "peta_gambar_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "peta_embed_url": {
+          "name": "peta_embed_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tatib_url": {
+          "name": "tatib_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "feedback_url": {
+          "name": "feedback_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'acara'"
+        },
+        "pakai_tiket": {
+          "name": "pakai_tiket",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "deskripsi": {
+          "name": "deskripsi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deskripsi_ar": {
+          "name": "deskripsi_ar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "poster_url": {
+          "name": "poster_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tampil": {
+          "name": "tampil",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "urutan": {
+          "name": "urutan",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "agenda": {
+          "name": "agenda",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gate_ikhwan": {
+          "name": "gate_ikhwan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gate_akhwat": {
+          "name": "gate_akhwat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wa_grup_ikhwan": {
+          "name": "wa_grup_ikhwan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wa_grup_akhwat": {
+          "name": "wa_grup_akhwat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wa_admin": {
+          "name": "wa_admin",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kuota": {
+          "name": "kuota",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kuota_ikhwan": {
+          "name": "kuota_ikhwan",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kuota_akhwat": {
+          "name": "kuota_akhwat",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kuota_ots": {
+          "name": "kuota_ots",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "waitlist_masuk": {
+          "name": "waitlist_masuk",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "prefiks_nomor": {
+          "name": "prefiks_nomor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'draft'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "acara_slug_unik": {
+          "name": "acara_slug_unik",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acara_akses": {
+      "name": "acara_akses",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "acara_id": {
+          "name": "acara_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wa4": {
+          "name": "wa4",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ip_hash": {
+          "name": "ip_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "berhasil": {
+          "name": "berhasil",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "akses_ip_idx": {
+          "name": "akses_ip_idx",
+          "columns": [
+            {
+              "expression": "ip_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "jenis",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "acara_akses_acara_id_acara_id_fk": {
+          "name": "acara_akses_acara_id_acara_id_fk",
+          "tableFrom": "acara_akses",
+          "tableTo": "acara",
+          "columnsFrom": [
+            "acara_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acara_counter": {
+      "name": "acara_counter",
+      "schema": "",
+      "columns": {
+        "acara_id": {
+          "name": "acara_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terakhir": {
+          "name": "terakhir",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "acara_counter_acara_id_acara_id_fk": {
+          "name": "acara_counter_acara_id_acara_id_fk",
+          "tableFrom": "acara_counter",
+          "tableTo": "acara",
+          "columnsFrom": [
+            "acara_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "acara_counter_acara_id_gender_pk": {
+          "name": "acara_counter_acara_id_gender_pk",
+          "columns": [
+            "acara_id",
+            "gender"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acara_kehadiran": {
+      "name": "acara_kehadiran",
+      "schema": "",
+      "columns": {
+        "peserta_id": {
+          "name": "peserta_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "acara_id": {
+          "name": "acara_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scanned_at": {
+          "name": "scanned_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "client_scanned_at": {
+          "name": "client_scanned_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gate": {
+          "name": "gate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "petugas": {
+          "name": "petugas",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "metode": {
+          "name": "metode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'qr'"
+        },
+        "offline": {
+          "name": "offline",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {
+        "kehadiran_waktu_idx": {
+          "name": "kehadiran_waktu_idx",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "scanned_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "kehadiran_gate_idx": {
+          "name": "kehadiran_gate_idx",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "gate",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "acara_kehadiran_peserta_id_acara_peserta_id_fk": {
+          "name": "acara_kehadiran_peserta_id_acara_peserta_id_fk",
+          "tableFrom": "acara_kehadiran",
+          "tableTo": "acara_peserta",
+          "columnsFrom": [
+            "peserta_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "acara_kehadiran_acara_id_acara_id_fk": {
+          "name": "acara_kehadiran_acara_id_acara_id_fk",
+          "tableFrom": "acara_kehadiran",
+          "tableTo": "acara",
+          "columnsFrom": [
+            "acara_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acara_panitia": {
+      "name": "acara_panitia",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "acara_id": {
+          "name": "acara_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "wa": {
+          "name": "wa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "divisi": {
+          "name": "divisi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sub_tim": {
+          "name": "sub_tim",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "peran": {
+          "name": "peran",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kode_pos": {
+          "name": "kode_pos",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bisa_tm": {
+          "name": "bisa_tm",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bisa_gladi": {
+          "name": "bisa_gladi",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bisa_0445": {
+          "name": "bisa_0445",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "punya_powerbank": {
+          "name": "punya_powerbank",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "catatan": {
+          "name": "catatan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "acara_panitia_acara_id_acara_id_fk": {
+          "name": "acara_panitia_acara_id_acara_id_fk",
+          "tableFrom": "acara_panitia",
+          "tableTo": "acara",
+          "columnsFrom": [
+            "acara_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.acara_peserta": {
+      "name": "acara_peserta",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "acara_id": {
+          "name": "acara_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nomor": {
+          "name": "nomor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kode": {
+          "name": "kode",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wa": {
+          "name": "wa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "lipia": {
+          "name": "lipia",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status_lipia": {
+          "name": "status_lipia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "nim": {
+          "name": "nim",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "prodi": {
+          "name": "prodi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sesi": {
+          "name": "sesi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "semester": {
+          "name": "semester",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tahun_lulus": {
+          "name": "tahun_lulus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "domisili": {
+          "name": "domisili",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "asal_daerah": {
+          "name": "asal_daerah",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "asal_sekolah": {
+          "name": "asal_sekolah",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "keahlian": {
+          "name": "keahlian",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "transportasi": {
+          "name": "transportasi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "kebutuhan_khusus": {
+          "name": "kebutuhan_khusus",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pra'"
+        },
+        "sumber": {
+          "name": "sumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'web'"
+        },
+        "aktif": {
+          "name": "aktif",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "konfirmasi": {
+          "name": "konfirmasi",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "konfirmasi_at": {
+          "name": "konfirmasi_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dipromosikan_at": {
+          "name": "dipromosikan_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tiket_dibuka_at": {
+          "name": "tiket_dibuka_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "catatan": {
+          "name": "catatan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "peserta_nomor_unik": {
+          "name": "peserta_nomor_unik",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nomor",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "peserta_wa_unik": {
+          "name": "peserta_wa_unik",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "wa",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "peserta_kode_unik": {
+          "name": "peserta_kode_unik",
+          "columns": [
+            {
+              "expression": "kode",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "peserta_nim_unik": {
+          "name": "peserta_nim_unik",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nim",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"acara_peserta\".\"nim\" is not null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "peserta_gender_idx": {
+          "name": "peserta_gender_idx",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "gender",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "peserta_tiket_dibuka_idx": {
+          "name": "peserta_tiket_dibuka_idx",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tiket_dibuka_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "peserta_nama_idx": {
+          "name": "peserta_nama_idx",
+          "columns": [
+            {
+              "expression": "acara_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "nama",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "acara_peserta_acara_id_acara_id_fk": {
+          "name": "acara_peserta_acara_id_acara_id_fk",
+          "tableFrom": "acara_peserta",
+          "tableTo": "acara",
+          "columnsFrom": [
+            "acara_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

@@ -1,0 +1,135 @@
+# Azure Pipelines: build + test in stage 1, deploy over SSH in stage 2.
+#
+# The variable group `nawa-build` holds ONLY public build arguments and registry
+# credentials. DATABASE_URL, AUTH_SECRET, IP_SALT and the three access codes are
+# NOT in it — they live in /srv/nawa/.env on the server, chmod 600. Anyone who can
+# edit this file can read a variable group.
+
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  - group: nawa-build
+  # Never push `latest`: the next `docker compose pull` would silently undo a
+  # rollback. Every image is tagged with the build number and the commit.
+  - name: imageTag
+    value: "$(Build.BuildNumber)-$(Build.SourceVersion)"
+  - name: imageName
+    value: "$(registryHost)/$(registryRepo)"
+
+stages:
+  - stage: build
+    displayName: Build and test
+    jobs:
+      - job: build
+        # Agent pool "Self Hosted" (arahan tim server 24 Sep 2026). Job ini build DI AGENT:
+        # agent wajib punya Docker (daemon + akses user agent) dan internet untuk NodeTool/pnpm.
+        pool:
+          name: Self Hosted
+        steps:
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "22.x"
+
+          - script: corepack enable && corepack prepare pnpm@11.1.0 --activate
+            displayName: Enable pnpm
+
+          - script: pnpm install --frozen-lockfile
+            displayName: Install
+
+          # Unit tests that need no database. The DB-backed suite runs against the
+          # service container below.
+          - script: pnpm vitest run --exclude "lib/acara/daftar.test.ts"
+            displayName: Test (pure)
+
+          - script: |
+              docker run -d --name pg -e POSTGRES_PASSWORD=ci -e POSTGRES_USER=ci \
+                -e POSTGRES_DB=ci -p 55432:5432 postgres:16-alpine
+              for i in $(seq 1 30); do
+                docker exec pg pg_isready -U ci && break
+                sleep 2
+              done
+              export DATABASE_URL="postgres://ci:ci@localhost:55432/ci"
+              export AUTH_SECRET="ci-secret-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              export IP_SALT="ci-salt-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              pnpm db:migrate
+              # Failing this stage must cancel the deploy: this is where the
+              # concurrent-numbering and idempotent-import tests live.
+              pnpm vitest run
+            displayName: Test (with database)
+
+          - script: pnpm build
+            displayName: Next build
+
+          - script: |
+              echo "$(registryPassword)" | docker login "$(registryHost)" \
+                -u "$(registryUser)" --password-stdin
+              docker build \
+                --build-arg NEXT_PUBLIC_BASE_URL="$(NEXT_PUBLIC_BASE_URL)" \
+                --build-arg NEXT_PUBLIC_WA_GRUP_IKHWAN="$(NEXT_PUBLIC_WA_GRUP_IKHWAN)" \
+                --build-arg NEXT_PUBLIC_WA_GRUP_AKHWAT="$(NEXT_PUBLIC_WA_GRUP_AKHWAT)" \
+                --build-arg NEXT_PUBLIC_WA_ADMIN="$(NEXT_PUBLIC_WA_ADMIN)" \
+                --build-arg APP_VERSION="$(imageTag)" \
+                --target runner \
+                -t "$(imageName):$(imageTag)" .
+              docker build --target migrator -t "$(imageName):migrator-$(imageTag)" .
+              docker push "$(imageName):$(imageTag)"
+              docker push "$(imageName):migrator-$(imageTag)"
+            displayName: Build and push image
+
+  - stage: deploy
+    displayName: Deploy
+    dependsOn: build
+    condition: succeeded()
+    jobs:
+      - deployment: server
+        environment: nawa-production
+        pool:
+          name: Self Hosted
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: SSH@0
+                  displayName: Pull, migrate, restart, verify, rollback on failure
+                  inputs:
+                    sshEndpoint: "$(sshServiceConnection)"
+                    runOptions: inline
+                    inline: |
+                      set -euo pipefail
+                      cd /srv/nawa
+
+                      # Record the running tag BEFORE swapping. Looking it up at
+                      # rollback time can fail: `docker image prune` may already
+                      # have removed it, exactly when it is needed most.
+                      if [ -f .env.deploy ]; then cp .env.deploy .env.deploy.prev; fi
+                      echo "IMAGE=$(imageName):$(imageTag)" > .env.deploy
+                      echo "MIGRATOR_IMAGE=$(imageName):migrator-$(imageTag)" >> .env.deploy
+
+                      export $(grep -v '^#' .env.deploy | xargs)
+                      docker compose pull app
+                      docker compose --profile tools run --rm migrator
+                      docker compose up -d app
+
+                      ok=0
+                      for i in $(seq 1 30); do
+                        if curl -fsS http://127.0.0.1:3000/api/health | grep -q '"db":"ok"'; then
+                          ok=1; break
+                        fi
+                        sleep 2
+                      done
+
+                      if [ "$ok" != "1" ]; then
+                        echo "health check failed, rolling back"
+                        if [ -f .env.deploy.prev ]; then
+                          cp .env.deploy.prev .env.deploy
+                          export $(grep -v '^#' .env.deploy | xargs)
+                          docker compose up -d app
+                        fi
+                        exit 1
+                      fi
+
+                      # Only images older than a week, so a rollback target survives.
+                      docker image prune -af --filter "until=168h" || true
